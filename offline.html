@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual-Token Forest - Нет соединения</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a2f1f 0%, #1a4a2a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .offline-container {
+            text-align: center;
+            max-width: 500px;
+            background: rgba(10, 47, 31, 0.95);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid #a3e4b7;
+        }
+        .offline-icon { font-size: 5rem; margin-bottom: 1rem; }
+        h1 { color: #a3e4b7; font-size: 2rem; margin-bottom: 1rem; }
+        p { color: #c0e0d0; font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.5; }
+        .retry-btn {
+            background: #a3e4b7;
+            color: #0a2f1f;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .retry-btn:hover { background: #2b8c5e; color: white; }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">🌲📡</div>
+        <h1>Нет соединения</h1>
+        <p>Лес ждёт. Проверьте интернет.<br>Как только связь восстановится, приложение продолжит работу.</p>
+        <button class="retry-btn" onclick="location.reload()">⟳ Попробовать снова</button>
+    </div>
+    <script>
+        setInterval(() => { if (navigator.onLine) location.reload(); }, 5000);
+    </script>
+</body>
+</html>

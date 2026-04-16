@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Дуал-токен лес | Security + Мемкоин для лесов</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Дуал-токен лес">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#F48D01">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #F48D01;
+            font-family: system-ui, 'Segoe UI', 'Cormorant Garamond', serif;
+            color: #000000;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Калейдоскопический слой */
+        .bg-layers {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: grayscale(100%) brightness(196%) contrast(300%) blur(0px);
+            opacity: 1.0;
+        }
+        .bg-layer.second {
+            filter: grayscale(48%) brightness(79%) contrast(300%) blur(0px);
+            opacity: 0.57;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* PWA иконка — как в образце: кнопка с отскоком */
+        .install-area {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .pwa-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .pwa-icon-btn img {
+            width: 96px;
+            height: 96px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .pwa-icon-btn:hover {
+            transform: scale(1.05);
+        }
+        .pwa-icon-btn:active {
+            transform: scale(0.95);
+        }
+        .install-note {
+            margin-top: 0.5rem;
+            color: #000000;
+            font-weight: 600;
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.3);
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+        }
+
+        .ask-btn {
+            background: #000000;
+            color: #b0d9b1;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 1.5rem;
+        }
+        .ask-btn:hover {
+            background: #333;
+            transform: scale(1.02);
+        }
+
+        .lang-switch {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            background: rgba(135, 206, 235, 0.25);
+            backdrop-filter: blur(8px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 60px;
+        }
+        .lang-btn {
+            background: rgba(135, 206, 235, 0.25);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0,0,0,0.25);
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #000000;
+            transition: 0.2s;
+        }
+        .lang-btn.active {
+            background: #000000;
+            color: #b0d9b1;
+            border-color: #000000;
+        }
+        .lang-btn:hover {
+            background: rgba(135, 206, 235, 0.5);
+            transform: scale(1.02);
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(176, 217, 177, 0.3);
+            backdrop-filter: blur(8px);
+            padding: 2rem;
+            border-radius: 3rem;
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #000000;
+        }
+        .hero .subhead {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #000000;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .concept-card {
+            background: rgba(244, 141, 1, 0.85);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            color: #ffffff;
+            transition: transform 0.2s;
+        }
+        .concept-card:hover {
+            transform: translateY(-5px);
+            background: rgba(244, 141, 1, 0.95);
+        }
+        .concept-card h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+        .card-icon {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .decision-circle {
+            background: rgba(244, 141, 1, 0.85);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            margin: 2rem 0;
+            color: #ffffff;
+        }
+        .decision-circle h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .algorithm-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .step {
+            flex: 1;
+            background: rgba(255,255,240,0.8);
+            padding: 1rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            color: #000000;
+        }
+        .step-number {
+            background: #b25d3a;
+            color: white;
+            display: inline-block;
+            width: 30px;
+            border-radius: 50%;
+        }
+
+        .token-table {
+            background: rgba(0,0,0,0.2);
+            border-radius: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #ffffff;
+        }
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        th {
+            background: #b25d3a;
+            color: white;
+        }
+
+        .quote {
+            background: rgba(244, 141, 1, 0.85);
+            backdrop-filter: blur(4px);
+            padding: 1.5rem;
+            border-radius: 2rem;
+            margin: 2rem 0;
+            border-left: 6px solid #ffd966;
+            color: #ffffff;
+        }
+
+        .quiz-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .check-btn {
+            background: #000000;
+            color: #b0d9b1;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+        }
+        .quiz-feedback {
+            margin-top: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: rgba(244, 141, 1, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 550px;
+            width: 90%;
+            color: white;
+        }
+        .modal-content textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border-radius: 1rem;
+            border: none;
+            min-height: 100px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        .modal-content button {
+            background: #000000;
+            color: #b0d9b1;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            width: 100%;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .answer-area {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            display: none;
+        }
+        .answer-area.active {
+            display: block;
+        }
+        .close-modal {
+            background: transparent !important;
+            color: #ffffff !important;
+            border: 1px solid #ffffff !important;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #000000;
+            font-size: 0.8rem;
+        }
+
+        .lang-content {
+            display: none;
+        }
+        .lang-content.active {
+            display: block;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 1rem;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-layers" id="bgLayers"></div>
+
+<div class="container">
+    <!-- PWA иконка — как в образце: кнопка с отскоком -->
+    <div class="install-area">
+        <button id="pwa-install-icon" class="pwa-icon-btn">
+            <img src="icon-192x192.png" alt="Установить приложение" width="96" height="96"
+                 onerror="this.style.display='none'; this.parentNode.querySelector('.fallback-text').style.display='inline-block';">
+            <span class="fallback-text" style="display:none;">🌲</span>
+        </button>
+        <div class="install-note note-pwa" id="installNote">✅ Нажмите на иконку, чтобы установить приложение</div>
+    </div>
+
+    <div class="lang-switch">
+        <button class="lang-btn" data-lang="ru">🇷🇺 Русский</button>
+        <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+    </div>
+
+    <!-- РУССКАЯ ВЕРСИЯ -->
+    <div id="ru-content" class="lang-content active">
+        <div class="hero">
+            <h1>Дуал-токен лес</h1>
+            <div class="subhead">Security + Мемкоин для суверенных лесов</div>
+            <button class="ask-btn" id="askQuestionBtnRu">🤔 Задать вопрос лесу</button>
+        </div>
+
+        <div class="cards-grid">
+            <div class="concept-card"><div class="card-icon">🏛️</div><h3>$CANOPY (Security Token)</h3><p>Обеспечен реальным денежным потоком от углеродных кредитов. Только для аккредитованных инвесторов. KYC/AML.</p></div>
+            <div class="concept-card"><div class="card-icon">🌿</div><h3>$TIMBER (Meme Token)</h3><p>Народный токен. Без KYC. Дефляционная модель: 30% выручки леса уходит на автоматический выкуп и сжигание.</p></div>
+            <div class="concept-card"><div class="card-icon">🔗</div><h3>Мост</h3><p>Сожги 1,000,000 $TIMBER → получи 1 $CANOPY. Мост из масс-маркета в институциональные инвестиции.</p></div>
+        </div>
+
+        <div class="decision-circle">
+            <h3>🌍 Три конституционные модели</h3>
+            <div class="token-table">
+                <table>
+                    <thead><tr><th>Режим</th><th>Примеры</th><th>Как работает Dual-Token</th></tr></thead>
+                    <tbody>
+                        <tr><td class="model-tag">Государственная монополия</td><td>Россия, Китай</td><td>Концессия (49 лет). $CANOPY = право на арендный поток.</td></tr>
+                        <tr><td class="model-tag">Public Trust</td><td>Бразилия, Боливия</td><td>ГЧП + REDD+. $CANOPY = углеродные кредиты.</td></tr>
+                        <tr><td class="model-tag">Смешанная</td><td>США, Германия</td><td>Частная земля. $CANOPY = долевая собственность.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="decision-circle">
+            <h3>💰 Денежный поток (Cash Flow Engine)</h3>
+            <div class="algorithm-steps">
+                <div class="step">🌲 Лес поглощает CO2</div>
+                <div class="step">📄 Углеродные кредиты (Verra)</div>
+                <div class="step">💵 Продажа компаниям → USDC</div>
+                <div class="step">⚙️ Смарт-контракт делит доход</div>
+            </div>
+            <p><strong>40%</strong> → дивиденды $CANOPY | <strong>30%</strong> → байбек $TIMBER | <strong>20%</strong> → лесовосстановление | <strong>10%</strong> → роялти государству</p>
+        </div>
+
+        <div class="quote">
+            <p>«Вам не нужно менять конституцию. Вам нужно токенизировать будущий денежный поток. Security токен — для институтов. Мемкоин — для народа. Лес побеждает. Государство побеждает.»</p>
+        </div>
+
+        <div class="decision-circle">
+            <h3>🧠 Тренировка: выбери стратегию</h3>
+            <div class="quiz-card" data-quiz="1">
+                <p><strong>Ситуация 1.</strong> Правительство не позволяет продавать землю. Ваши действия?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="quiz1" value="a"> Нарушить закон и продать токены земли.</label>
+                    <label><input type="radio" name="quiz1" value="b"> Заключить концессию (аренду) и токенизировать право на доход.</label>
+                    <label><input type="radio" name="quiz1" value="c"> Уйти в другой проект.</label>
+                </div>
+                <button class="check-btn" data-quiz="1">Проверить</button>
+                <div class="quiz-feedback" data-feedback="1"></div>
+            </div>
+            <div class="quiz-card" data-quiz="2">
+                <p><strong>Ситуация 2.</strong> Как сделать мемкоин устойчивым, а не пирамидой?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="quiz2" value="a"> Бесконечно печатать новые монеты.</label>
+                    <label><input type="radio" name="quiz2" value="b"> Привязать к реальному денежному потоку от углеродных кредитов (байбек).</label>
+                    <label><input type="radio" name="quiz2" value="c"> Положиться только на хайп в соцсетях.</label>
+                </div>
+                <button class="check-btn" data-quiz="2">Проверить</button>
+                <div class="quiz-feedback" data-feedback="2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- АНГЛИЙСКАЯ ВЕРСИЯ -->
+    <div id="en-content" class="lang-content">
+        <div class="hero">
+            <h1>Dual-Token Forest</h1>
+            <div class="subhead">Security + Meme for Sovereign Forests</div>
+            <button class="ask-btn" id="askQuestionBtnEn">🤔 Ask the Forest</button>
+        </div>
+        <div class="cards-grid">
+            <div class="concept-card"><div class="card-icon">🏛️</div><h3>$CANOPY (Security)</h3><p>Backed by real carbon credit cash flow. KYC/AML. For accredited investors.</p></div>
+            <div class="concept-card"><div class="card-icon">🌿</div><h3>$TIMBER (Meme)</h3><p>No KYC. Deflationary: 30% of forest revenue → auto buyback & burn.</p></div>
+            <div class="concept-card"><div class="card-icon">🔗</div><h3>The Bridge</h3><p>Burn 1,000,000 $TIMBER → mint 1 $CANOPY.</p></div>
+        </div>
+        <div class="decision-circle"><h3>🌍 3 Constitutional Models</h3><div class="token-table"><table><thead><tr><th>Regime</th><th>Examples</th><th>Dual-Token Adaptation</th></tr></thead><tbody><tr><td class="model-tag">State Monopoly</td><td>Russia, China</td><td>Concession (49y). $CANOPY = lease cash flow.</td></tr><tr><td class="model-tag">Public Trust</td><td>Brazil, Bolivia</td><td>PPP + REDD+. $CANOPY = carbon credits.</td></tr><tr><td class="model-tag">Mixed</td><td>USA, Germany</td><td>Private land. $CANOPY = fractional ownership.</td></tr></tbody></table></div></div>
+        <div class="decision-circle"><h3>💰 Cash Flow Engine</h3><div class="algorithm-steps"><div class="step">🌲 CO2 absorption</div><div class="step">📄 Carbon credits</div><div class="step">💵 Sale → USDC</div><div class="step">⚙️ Smart contract splits</div></div><p><strong>40%</strong> → $CANOPY dividends | <strong>30%</strong> → $TIMBER buyback | <strong>20%</strong> → reforestation | <strong>10%</strong> → gov royalty</p></div>
+        <div class="quote"><p>"You don't need to change the constitution. Just tokenize the future cash flow. Security for institutions. Meme for the people."</p></div>
+        <div class="decision-circle"><h3>🧠 Training: choose strategy</h3>
+            <div class="quiz-card" data-quiz="1-en"><p><strong>Situation 1.</strong> Government bans land sale. What to do?</p><div class="quiz-options"><label><input type="radio" name="quiz1en" value="a"> Break the law.</label><label><input type="radio" name="quiz1en" value="b"> Sign a concession & tokenize cash flow rights.</label><label><input type="radio" name="quiz1en" value="c"> Leave.</label></div><button class="check-btn" data-quiz="1-en">Check</button><div class="quiz-feedback" data-feedback="1-en"></div></div>
+            <div class="quiz-card" data-quiz="2-en"><p><strong>Situation 2.</strong> How to make a meme coin sustainable?</p><div class="quiz-options"><label><input type="radio" name="quiz2en" value="a"> Print unlimited.</label><label><input type="radio" name="quiz2en" value="b"> Back with real carbon credit cash flow (buyback).</label><label><input type="radio" name="quiz2en" value="c"> Only social hype.</label></div><button class="check-btn" data-quiz="2-en">Check</button><div class="quiz-feedback" data-feedback="2-en"></div></div>
+        </div>
+    </div>
+
+    <footer>© Дуал-токен лес — конституционный капитализм на блокчейне</footer>
+</div>
+
+<!-- Модальное окно -->
+<div id="questionModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">🤔 Спросите у леса</h3>
+        <textarea id="questionText" placeholder="Например: Как мне инвестировать в лес через токены?"></textarea>
+        <button id="submitQuestion">🔮 Получить анализ (теория игр + токеномика)</button>
+        <div id="answerArea" class="answer-area">
+            <strong id="answerTitle">📊 Анализ на основе модели Dual-Token:</strong>
+            <p id="answerText"></p>
+        </div>
+        <button id="closeModalBtn" class="close-modal">✖ Закрыть</button>
+    </div>
+</div>
+
+<script>
+    // -------------------- КАЛЕЙДОСКОП --------------------
+    const bgImages = ['01.jpeg', '02.jpeg', '03.jpeg', '04.jpeg', '05.jpeg', '06.jpeg', '07.jpg', '08.jpeg'];
+    const shuffled = [...bgImages].sort(() => 0.5 - Math.random());
+    const selected1 = shuffled[0];
+    const selected2 = shuffled[1];
+    
+    const bgLayersDiv = document.getElementById('bgLayers');
+    if (bgLayersDiv) {
+        const layer1 = document.createElement('div');
+        layer1.className = 'bg-layer';
+        layer1.style.backgroundImage = `url('${selected1}')`;
+        const layer2 = document.createElement('div');
+        layer2.className = 'bg-layer second';
+        layer2.style.backgroundImage = `url('${selected2}')`;
+        bgLayersDiv.appendChild(layer1);
+        bgLayersDiv.appendChild(layer2);
+    }
+
+    // -------------------- PWA УСТАНОВКА (КАК В ОБРАЗЦЕ) --------------------
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        console.log('PWA ready to install');
+    });
+    
+    const pwaButton = document.getElementById('pwa-install-icon');
+    if (pwaButton) {
+        pwaButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`PWA install: ${outcome}`);
+                deferredPrompt = null;
+            } else {
+                const lang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
+                alert(lang === 'ru' 
+                    ? 'Для установки: Chrome → меню → "Установить приложение" | Safari → Поделиться → "На экран Домой"'
+                    : 'To install: Chrome → menu → "Install app" | Safari → Share → "Add to Home Screen"');
+            }
+        });
+    }
+
+    // -------------------- ПЕРЕКЛЮЧЕНИЕ ЯЗЫКОВ --------------------
+    const ruDiv = document.getElementById('ru-content');
+    const enDiv = document.getElementById('en-content');
+    const modalTitle = document.getElementById('modalTitle');
+    const submitBtnText = document.getElementById('submitQuestion');
+    const answerTitleText = document.getElementById('answerTitle');
+    const questionTextarea = document.getElementById('questionText');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const installNote = document.getElementById('installNote');
+    
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.dataset.lang;
+            if (lang === 'ru') {
+                ruDiv.classList.add('active');
+                enDiv.classList.remove('active');
+            } else {
+                ruDiv.classList.remove('active');
+                enDiv.classList.add('active');
+            }
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Обновление модального окна
+            if (lang === 'ru') {
+                modalTitle.textContent = '🤔 Спросите у леса';
+                submitBtnText.textContent = '🔮 Получить анализ (теория игр + токеномика)';
+                answerTitleText.textContent = '📊 Анализ на основе модели Dual-Token:';
+                questionTextarea.placeholder = 'Например: Как мне инвестировать в лес через токены?';
+                closeModalBtn.textContent = '✖ Закрыть';
+                installNote.textContent = '✅ Нажмите на иконку, чтобы установить приложение';
+            } else {
+                modalTitle.textContent = '🤔 Ask the Forest';
+                submitBtnText.textContent = '🔮 Get analysis (game theory + tokenomics)';
+                answerTitleText.textContent = '📊 Analysis based on Dual-Token model:';
+                questionTextarea.placeholder = 'For example: How do I invest in forest through tokens?';
+                closeModalBtn.textContent = '✖ Close';
+                installNote.textContent = '✅ Click the icon to install the app';
+            }
+        });
+    });
+
+    // -------------------- МОДАЛЬНОЕ ОКНО --------------------
+    const modal = document.getElementById('questionModal');
+    const askBtnRu = document.getElementById('askQuestionBtnRu');
+    const askBtnEn = document.getElementById('askQuestionBtnEn');
+    const closeModalBtns = document.querySelectorAll('.close-modal');
+    const submitBtn = document.getElementById('submitQuestion');
+    const answerArea = document.getElementById('answerArea');
+    const answerText = document.getElementById('answerText');
+
+    function openModal() { modal.classList.add('active'); }
+    if (askBtnRu) askBtnRu.addEventListener('click', openModal);
+    if (askBtnEn) askBtnEn.addEventListener('click', openModal);
+    closeModalBtns.forEach(btn => btn.addEventListener('click', () => {
+        modal.classList.remove('active');
+        answerArea.classList.remove('active');
+    }));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+    function analyzeForestQuestion(question, lang = 'ru') {
+        const q = question.toLowerCase();
+        const dangerous = ['оружие', 'бомб', 'убить', 'насилие', 'weapon', 'bomb', 'kill', 'violence'];
+        for (let word of dangerous) {
+            if (q.includes(word)) {
+                return lang === 'ru' 
+                    ? '⚠️ Извините, я могу отвечать только на вопросы, связанные с лесами, токенизацией и инвестициями.'
+                    : '⚠️ Sorry, I can only answer questions about forests, tokenization, and investments.';
+            }
+        }
+        if (q.includes('инвестиц') || q.includes('вложить') || q.includes('купить') || q.includes('invest') || q.includes('buy')) {
+            return lang === 'ru'
+                ? '📈 Вероятность успешной инвестиции в лес через нашу модель — 74%\n\nРекомендация: 70% в $CANOPY (надёжность), 30% в $TIMBER (апсайд).'
+                : '📈 Probability of successful forest investment — 74%\n\nRecommendation: 70% in $CANOPY (safety), 30% in $TIMBER (upside).';
+        }
+        if (q.includes('разниц') || q.includes('отличается') || q.includes('difference')) {
+            return lang === 'ru'
+                ? '🌲 $CANOPY — Security Token (KYC, дивиденды). 🌿 $TIMBER — Мемкоин (без KYC, байбек из выручки).'
+                : '🌲 $CANOPY — Security Token (KYC, dividends). 🌿 $TIMBER — Meme coin (no KYC, buyback from revenue).';
+        }
+        if (q.includes('государств') || q.includes('конституц') || q.includes('government')) {
+            return lang === 'ru'
+                ? '🏛️ Три модели: госмонополия (концессия), Public Trust (ГЧП), смешанная (частная земля). Конституцию менять не нужно.'
+                : '🏛️ Three models: state monopoly (concession), public trust (PPP), mixed (private land). No constitutional change needed.';
+        }
+        return lang === 'ru'
+            ? '❓ Для точного анализа уточните: страна? $CANOPY или $TIMBER? Горизонт инвестиций?'
+            : '❓ For precise analysis, please specify: country? $CANOPY or $TIMBER? Investment horizon?';
+    }
+
+    submitBtn.addEventListener('click', () => {
+        const question = document.getElementById('questionText').value;
+        if (!question.trim()) {
+            const lang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
+            answerText.innerText = lang === 'ru' ? '❌ Напишите вопрос о лесе или токенах.' : '❌ Write a question about the forest or tokens.';
+            answerArea.classList.add('active');
+            return;
+        }
+        const currentLang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
+        answerText.innerText = analyzeForestQuestion(question, currentLang);
+        answerArea.classList.add('active');
+    });
+
+    // -------------------- КВИЗЫ --------------------
+    const answers = { '1': 'b', '2': 'b', '1-en': 'b', '2-en': 'b' };
+    const feedbackMsg = {
+        '1': { ru: '✅ Верно! Концессия — законный путь.', en: '✅ Correct! Concession is the legal path.' },
+        '2': { ru: '✅ Правильно! Байбек из выручки.', en: '✅ Correct! Buyback from revenue.' }
+    };
+    document.querySelectorAll('.check-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const quizId = btn.dataset.quiz;
+            const container = btn.closest('.quiz-card');
+            const radioName = quizId.includes('en') ? `quiz${quizId.split('-')[0]}en` : `quiz${quizId}`;
+            const selected = container.querySelector(`input[name="${radioName}"]:checked`);
+            const fbDiv = container.querySelector('.quiz-feedback');
+            const lang = quizId.includes('en') ? 'en' : 'ru';
+            if (!selected) { fbDiv.innerHTML = lang === 'ru' ? '⚠️ Выберите вариант.' : '⚠️ Select an option.'; return; }
+            fbDiv.innerHTML = selected.value === answers[quizId] ? feedbackMsg[quizId.split('-')[0]][lang] : (lang === 'ru' ? '❌ Неверно.' : '❌ Incorrect.');
+        });
+    });
+</script>
+</body>
+</html>
