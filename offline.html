@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dual-Token Forest - Нет соединения</title>
+    <title>Dual-Token - Нет соединения</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            font-family: system-ui, sans-serif;
             background: #F48D01;
             min-height: 100vh;
             display: flex;
@@ -22,35 +22,50 @@
             backdrop-filter: blur(8px);
             border-radius: 48px;
             padding: 3rem 2rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             border: 1px solid #b0d9b1;
         }
         .offline-icon { font-size: 5rem; margin-bottom: 1rem; }
         h1 { color: #b0d9b1; font-size: 2rem; margin-bottom: 1rem; }
-        p { color: #ffffff; font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.5; }
+        p { color: #fff; margin-bottom: 2rem; }
         .retry-btn {
             background: #b0d9b1;
-            color: #000000;
+            color: #000;
             border: none;
             padding: 0.8rem 2rem;
-            font-size: 1.2rem;
             border-radius: 40px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.3s;
         }
-        .retry-btn:hover { background: #000000; color: #b0d9b1; }
+        .retry-btn:hover { background: #000; color: #b0d9b1; }
+        .contacts { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(176,217,177,0.3); }
+        .contacts a { color: #b0d9b1; text-decoration: none; margin: 0.5rem; display: inline-block; }
+        .check-status { margin-top: 1rem; font-size: 0.75rem; color: rgba(255,255,255,0.5); }
     </style>
 </head>
 <body>
     <div class="offline-container">
-        <div class="offline-icon">🌲📡</div>
+        <div class="offline-icon">📡</div>
         <h1>Нет соединения</h1>
-        <p>Лес ждёт. Проверьте интернет.<br>Как только связь восстановится, приложение продолжит работу.</p>
+        <p>Проверьте интернет.<br>Приложение само перезагрузится при восстановлении связи.</p>
         <button class="retry-btn" onclick="location.reload()">⟳ Попробовать снова</button>
+        <div class="contacts">
+            <a href="https://t.me/faufautua" target="_blank">📱 Telegram</a>
+            <a href="mailto:gavrosh2007@gmail.com">✉️ Email</a>
+        </div>
+        <div class="check-status" id="statusCheck">⏳ Проверка соединения...</div>
     </div>
     <script>
-        setInterval(() => { if (navigator.onLine) location.reload(); }, 5000);
+        let count = 0;
+        const interval = setInterval(() => {
+            count++;
+            if (navigator.onLine) {
+                document.getElementById('statusCheck').innerHTML = '✅ Соединение восстановлено! Перезагрузка...';
+                clearInterval(interval);
+                setTimeout(() => location.reload(), 500);
+            } else {
+                document.getElementById('statusCheck').innerHTML = `⏳ Нет соединения... попытка ${count}`;
+            }
+        }, 3000);
     </script>
 </body>
 </html>

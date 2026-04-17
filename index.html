@@ -9,7 +9,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Дуал-токен лес">
+    <meta name="apple-mobile-web-app-title" content="Dual-Token Forest">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#F48D01">
     
@@ -30,7 +30,6 @@
             position: relative;
         }
 
-        /* Калейдоскопический слой */
         .bg-layers {
             position: fixed;
             top: 0;
@@ -64,18 +63,29 @@
             margin: 0 auto;
         }
 
-        /* PWA иконка — как в образце: кнопка с отскоком */
+        /* PWA кнопка — как в Hermes */
         .install-area {
             text-align: center;
-            margin-bottom: 1rem;
+            margin: 0 0 1.5rem 0;
+        }
+        .install-tooltip {
+            position: relative;
+            display: inline-block;
         }
         .pwa-icon-btn {
             background: none;
             border: none;
             cursor: pointer;
             padding: 0;
-            display: inline-block;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             transition: transform 0.2s;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #000000;
         }
         .pwa-icon-btn img {
             width: 96px;
@@ -89,6 +99,29 @@
         .pwa-icon-btn:active {
             transform: scale(0.95);
         }
+        .tooltip-text {
+            visibility: hidden;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
+        .install-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
         .install-note {
             margin-top: 0.5rem;
             color: #000000;
@@ -98,6 +131,17 @@
             display: inline-block;
             padding: 0.3rem 1rem;
             border-radius: 50px;
+        }
+        @media (max-width: 600px) {
+            .pwa-icon-btn img {
+                width: 64px;
+                height: 64px;
+            }
+            .tooltip-text {
+                white-space: normal;
+                width: 200px;
+                bottom: 130%;
+            }
         }
 
         .ask-btn {
@@ -376,14 +420,17 @@
 <div class="bg-layers" id="bgLayers"></div>
 
 <div class="container">
-    <!-- PWA иконка — как в образце: кнопка с отскоком -->
     <div class="install-area">
-        <button id="pwa-install-icon" class="pwa-icon-btn">
-            <img src="icon-192x192.png" alt="Установить приложение" width="96" height="96"
-                 onerror="this.style.display='none'; this.parentNode.querySelector('.fallback-text').style.display='inline-block';">
-            <span class="fallback-text" style="display:none;">🌲</span>
-        </button>
-        <div class="install-note note-pwa" id="installNote">✅ Нажмите на иконку, чтобы установить приложение</div>
+        <div class="install-tooltip">
+            <button id="pwa-install-icon" class="pwa-icon-btn">
+                <img src="icon-192x192.png" alt="Установить приложение" width="96" height="96"
+                     onerror="this.style.display='none'; this.parentNode.querySelector('.fallback-text').style.display='inline-block';">
+                <span class="fallback-text" style="display:none;">🌲</span>
+                <span id="pwaButtonText">Установить</span>
+            </button>
+            <span class="tooltip-text" id="pwaTooltip">💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».</span>
+        </div>
+        <div class="install-note" id="installNote">✅ Нажмите на иконку монитора со стрелкой в адресной строке, чтобы установить приложение. На iPhone: Поделиться → На экран «Домой».</div>
     </div>
 
     <div class="lang-switch">
@@ -391,7 +438,6 @@
         <button class="lang-btn" data-lang="en">🇬🇧 English</button>
     </div>
 
-    <!-- РУССКАЯ ВЕРСИЯ -->
     <div id="ru-content" class="lang-content active">
         <div class="hero">
             <h1>Дуал-токен лес</h1>
@@ -459,7 +505,6 @@
         </div>
     </div>
 
-    <!-- АНГЛИЙСКАЯ ВЕРСИЯ -->
     <div id="en-content" class="lang-content">
         <div class="hero">
             <h1>Dual-Token Forest</h1>
@@ -471,10 +516,11 @@
             <div class="concept-card"><div class="card-icon">🌿</div><h3>$TIMBER (Meme)</h3><p>No KYC. Deflationary: 30% of forest revenue → auto buyback & burn.</p></div>
             <div class="concept-card"><div class="card-icon">🔗</div><h3>The Bridge</h3><p>Burn 1,000,000 $TIMBER → mint 1 $CANOPY.</p></div>
         </div>
-        <div class="decision-circle"><h3>🌍 3 Constitutional Models</h3><div class="token-table"><table><thead><tr><th>Regime</th><th>Examples</th><th>Dual-Token Adaptation</th></tr></thead><tbody><tr><td class="model-tag">State Monopoly</td><td>Russia, China</td><td>Concession (49y). $CANOPY = lease cash flow.</td></tr>
-            <tr><td class="model-tag">Public Trust</td><td>Brazil, Bolivia</td><td>PPP + REDD+. $CANOPY = carbon credits.</td></tr>
-            <tr><td class="model-tag">Mixed</td><td>USA, Germany</td><td>Private land. $CANOPY = fractional ownership.</td></tr>
-            </tbody></table></div></div>
+        <div class="decision-circle"><h3>🌍 3 Constitutional Models</h3><div class="token-table"><table><thead><tr><th>Regime</th><th>Examples</th><th>Dual-Token Adaptation</th></tr></thead><tbody>
+            <tr><td>State Monopoly</td><td>Russia, China</td><td>Concession (49y). $CANOPY = lease cash flow.</td></tr>
+            <tr><td>Public Trust</td><td>Brazil, Bolivia</td><td>PPP + REDD+. $CANOPY = carbon credits.</td></tr>
+            <tr><td>Mixed</td><td>USA, Germany</td><td>Private land. $CANOPY = fractional ownership.</td></tr>
+        </tbody></table></div></div>
         <div class="decision-circle"><h3>💰 Cash Flow Engine</h3><div class="algorithm-steps"><div class="step">🌲 CO2 absorption</div><div class="step">📄 Carbon credits</div><div class="step">💵 Sale → USDC</div><div class="step">⚙️ Smart contract splits</div></div><p><strong>40%</strong> → $CANOPY dividends | <strong>30%</strong> → $TIMBER buyback | <strong>20%</strong> → reforestation | <strong>10%</strong> → gov royalty</p></div>
         <div class="quote"><p>"You don't need to change the constitution. Just tokenize the future cash flow. Security for institutions. Meme for the people."</p></div>
         <div class="decision-circle"><h3>🧠 Training: choose strategy</h3>
@@ -486,7 +532,6 @@
     <footer>© Дуал-токен лес — конституционный капитализм на блокчейне</footer>
 </div>
 
-<!-- Модальное окно -->
 <div id="questionModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">🤔 Спросите у леса</h3>
@@ -501,7 +546,7 @@
 </div>
 
 <script>
-    // -------------------- КАЛЕЙДОСКОП --------------------
+    // Калейдоскоп фонов
     const bgImages = ['01.jpeg', '02.jpeg', '03.jpeg', '04.jpeg', '05.jpeg', '06.jpeg', '07.jpg', '08.jpeg'];
     const shuffled = [...bgImages].sort(() => 0.5 - Math.random());
     const selected1 = shuffled[0];
@@ -519,40 +564,72 @@
         bgLayersDiv.appendChild(layer2);
     }
 
-    // -------------------- PWA УСТАНОВКА (КАК В ОБРАЗЦЕ) --------------------
+    // PWA установка
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        console.log('PWA ready to install');
     });
     
-    const pwaButton = document.getElementById('pwa-install-icon');
-    if (pwaButton) {
-        pwaButton.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`PWA install: ${outcome}`);
-                deferredPrompt = null;
-            } else {
-                const lang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
-                alert(lang === 'ru' 
-                    ? 'Для установки: Chrome → меню → "Установить приложение" | Safari → Поделиться → "На экран Домой"'
-                    : 'To install: Chrome → menu → "Install app" | Safari → Share → "Add to Home Screen"');
-            }
-        });
+    window.showPWAInstructions = function() {
+        const lang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
+        alert(lang === 'ru' 
+            ? 'Для установки приложения:\n\n• На компьютере: нажмите на иконку монитора со стрелкой в адресной строке.\n• На iPhone: нажмите "Поделиться" → "На экран «Домой»".\n• На Android: нажмите на иконку монитора со стрелкой в адресной строке.'
+            : 'To install the app:\n\n• On computer: click the monitor icon with a down arrow in the address bar.\n• On iPhone: tap "Share" → "Add to Home Screen".\n• On Android: tap the monitor icon with a down arrow in the address bar.');
+    };
+    
+    document.getElementById('pwa-install-icon')?.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+        } else {
+            showPWAInstructions();
+        }
+    });
+
+    // Обновление текстов PWA
+    function updatePWATexts(lang) {
+        const btnText = document.getElementById('pwaButtonText');
+        const tooltip = document.getElementById('pwaTooltip');
+        const installNote = document.getElementById('installNote');
+        if (lang === 'ru') {
+            if (btnText) btnText.textContent = 'Установить';
+            if (tooltip) tooltip.innerHTML = '💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».';
+            if (installNote) installNote.innerHTML = '✅ Нажмите на иконку монитора со стрелкой в адресной строке, чтобы установить приложение. На iPhone: Поделиться → На экран «Домой».';
+        } else {
+            if (btnText) btnText.textContent = 'Install';
+            if (tooltip) tooltip.innerHTML = '💡 Click — install as app.<br>• Chrome/Edge: dialog appears.<br>• iPhone: Share → Add to Home Screen.';
+            if (installNote) installNote.innerHTML = '✅ Click the monitor icon with a down arrow in the address bar to install the app. On iPhone: Share → Add to Home Screen.';
+        }
     }
 
-    // -------------------- ПЕРЕКЛЮЧЕНИЕ ЯЗЫКОВ --------------------
+    // Переключение языков
     const ruDiv = document.getElementById('ru-content');
     const enDiv = document.getElementById('en-content');
-    const modalTitle = document.getElementById('modalTitle');
-    const submitBtnText = document.getElementById('submitQuestion');
-    const answerTitleText = document.getElementById('answerTitle');
-    const questionTextarea = document.getElementById('questionText');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const installNote = document.getElementById('installNote');
+    
+    function updateUILang(lang) {
+        const modalTitle = document.getElementById('modalTitle');
+        const submitBtn = document.getElementById('submitQuestion');
+        const answerTitle = document.getElementById('answerTitle');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const textarea = document.getElementById('questionText');
+        
+        if (lang === 'ru') {
+            modalTitle.textContent = '🤔 Спросите у леса';
+            submitBtn.textContent = '🔮 Получить анализ (теория игр + токеномика)';
+            answerTitle.textContent = '📊 Анализ на основе модели Dual-Token:';
+            textarea.placeholder = 'Например: Как мне инвестировать в лес через токены?';
+            closeBtn.textContent = '✖ Закрыть';
+        } else {
+            modalTitle.textContent = '🤔 Ask the Forest';
+            submitBtn.textContent = '🔮 Get analysis (game theory + tokenomics)';
+            answerTitle.textContent = '📊 Analysis based on Dual-Token model:';
+            textarea.placeholder = 'For example: How do I invest in forest through tokens?';
+            closeBtn.textContent = '✖ Close';
+        }
+        updatePWATexts(lang);
+    }
     
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -566,88 +643,52 @@
             }
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            // Обновление модального окна
-            if (lang === 'ru') {
-                modalTitle.textContent = '🤔 Спросите у леса';
-                submitBtnText.textContent = '🔮 Получить анализ (теория игр + токеномика)';
-                answerTitleText.textContent = '📊 Анализ на основе модели Dual-Token:';
-                questionTextarea.placeholder = 'Например: Как мне инвестировать в лес через токены?';
-                closeModalBtn.textContent = '✖ Закрыть';
-                installNote.textContent = '✅ Нажмите на иконку, чтобы установить приложение';
-            } else {
-                modalTitle.textContent = '🤔 Ask the Forest';
-                submitBtnText.textContent = '🔮 Get analysis (game theory + tokenomics)';
-                answerTitleText.textContent = '📊 Analysis based on Dual-Token model:';
-                questionTextarea.placeholder = 'For example: How do I invest in forest through tokens?';
-                closeModalBtn.textContent = '✖ Close';
-                installNote.textContent = '✅ Click the icon to install the app';
-            }
+            updateUILang(lang);
         });
     });
+    updateUILang('ru');
 
-    // -------------------- МОДАЛЬНОЕ ОКНО --------------------
+    // Модальное окно
     const modal = document.getElementById('questionModal');
-    const askBtnRu = document.getElementById('askQuestionBtnRu');
-    const askBtnEn = document.getElementById('askQuestionBtnEn');
-    const closeModalBtns = document.querySelectorAll('.close-modal');
-    const submitBtn = document.getElementById('submitQuestion');
-    const answerArea = document.getElementById('answerArea');
-    const answerText = document.getElementById('answerText');
-
-    function openModal() { modal.classList.add('active'); }
-    if (askBtnRu) askBtnRu.addEventListener('click', openModal);
-    if (askBtnEn) askBtnEn.addEventListener('click', openModal);
-    closeModalBtns.forEach(btn => btn.addEventListener('click', () => {
+    document.getElementById('askQuestionBtnRu')?.addEventListener('click', () => modal.classList.add('active'));
+    document.getElementById('askQuestionBtnEn')?.addEventListener('click', () => modal.classList.add('active'));
+    document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', () => {
         modal.classList.remove('active');
-        answerArea.classList.remove('active');
+        document.getElementById('answerArea').classList.remove('active');
     }));
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
 
-    function analyzeForestQuestion(question, lang = 'ru') {
+    function analyzeForestQuestion(question, lang) {
         const q = question.toLowerCase();
         const dangerous = ['оружие', 'бомб', 'убить', 'насилие', 'weapon', 'bomb', 'kill', 'violence'];
         for (let word of dangerous) {
             if (q.includes(word)) {
-                return lang === 'ru' 
-                    ? '⚠️ Извините, я могу отвечать только на вопросы, связанные с лесами, токенизацией и инвестициями.'
-                    : '⚠️ Sorry, I can only answer questions about forests, tokenization, and investments.';
+                return lang === 'ru' ? '⚠️ Извините, я могу отвечать только на вопросы о лесах, токенизации и инвестициях.' : '⚠️ Sorry, I can only answer about forests, tokenization, and investments.';
             }
         }
         if (q.includes('инвестиц') || q.includes('вложить') || q.includes('купить') || q.includes('invest') || q.includes('buy')) {
-            return lang === 'ru'
-                ? '📈 Вероятность успешной инвестиции в лес через нашу модель — 74%\n\nРекомендация: 70% в $CANOPY (надёжность), 30% в $TIMBER (апсайд).'
-                : '📈 Probability of successful forest investment — 74%\n\nRecommendation: 70% in $CANOPY (safety), 30% in $TIMBER (upside).';
+            return lang === 'ru' ? '📈 Вероятность успешной инвестиции — 74%\n\nРекомендация: 70% в $CANOPY, 30% в $TIMBER.' : '📈 Probability of successful investment — 74%\n\nRecommendation: 70% in $CANOPY, 30% in $TIMBER.';
         }
         if (q.includes('разниц') || q.includes('отличается') || q.includes('difference')) {
-            return lang === 'ru'
-                ? '🌲 $CANOPY — Security Token (KYC, дивиденды). 🌿 $TIMBER — Мемкоин (без KYC, байбек из выручки).'
-                : '🌲 $CANOPY — Security Token (KYC, dividends). 🌿 $TIMBER — Meme coin (no KYC, buyback from revenue).';
+            return lang === 'ru' ? '🌲 $CANOPY — Security Token (KYC, дивиденды). 🌿 $TIMBER — Мемкоин (без KYC, байбек).' : '🌲 $CANOPY — Security Token (KYC, dividends). 🌿 $TIMBER — Meme coin (no KYC, buyback).';
         }
-        if (q.includes('государств') || q.includes('конституц') || q.includes('government')) {
-            return lang === 'ru'
-                ? '🏛️ Три модели: госмонополия (концессия), Public Trust (ГЧП), смешанная (частная земля). Конституцию менять не нужно.'
-                : '🏛️ Three models: state monopoly (concession), public trust (PPP), mixed (private land). No constitutional change needed.';
-        }
-        return lang === 'ru'
-            ? '❓ Для точного анализа уточните: страна? $CANOPY или $TIMBER? Горизонт инвестиций?'
-            : '❓ For precise analysis, please specify: country? $CANOPY or $TIMBER? Investment horizon?';
+        return lang === 'ru' ? '❓ Уточните: страна? $CANOPY или $TIMBER? Горизонт инвестиций?' : '❓ Please specify: country? $CANOPY or $TIMBER? Investment horizon?';
     }
 
-    submitBtn.addEventListener('click', () => {
+    document.getElementById('submitQuestion')?.addEventListener('click', () => {
         const question = document.getElementById('questionText').value;
+        const lang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
+        const answerText = document.getElementById('answerText');
         if (!question.trim()) {
-            const lang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
             answerText.innerText = lang === 'ru' ? '❌ Напишите вопрос о лесе или токенах.' : '❌ Write a question about the forest or tokens.';
-            answerArea.classList.add('active');
+            document.getElementById('answerArea').classList.add('active');
             return;
         }
-        const currentLang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
-        answerText.innerText = analyzeForestQuestion(question, currentLang);
-        answerArea.classList.add('active');
+        answerText.innerText = analyzeForestQuestion(question, lang);
+        document.getElementById('answerArea').classList.add('active');
     });
 
-    // -------------------- КВИЗЫ --------------------
+    // Квизы
     const answers = { '1': 'b', '2': 'b', '1-en': 'b', '2-en': 'b' };
     const feedbackMsg = {
         '1': { ru: '✅ Верно! Концессия — законный путь.', en: '✅ Correct! Concession is the legal path.' },
@@ -666,12 +707,12 @@
         });
     });
 
-    // -------------------- РЕГИСТРАЦИЯ SERVICE WORKER (PWA) --------------------
+    // Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then(reg => console.log('✅ Service Worker registered:', reg))
-                .catch(err => console.log('❌ Service Worker error:', err));
+            navigator.serviceWorker.register('/Dual-Token/sw.js', { scope: '/Dual-Token/' })
+                .then(reg => console.log('✅ SW registered:', reg.scope))
+                .catch(err => console.log('❌ SW error:', err));
         });
     }
 </script>

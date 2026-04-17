@@ -1,23 +1,24 @@
 {
-  "name": "Dual-Token Forest",
-  "short_name": "Forest Token",
-  "start_url": "./",
-  "scope": "./",
+  "name": "Дуал-токен лес | Security + Мемкоин",
+  "short_name": "Dual-Token",
+  "start_url": "/Dual-Token/index.html",
+  "scope": "/Dual-Token/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "theme_color": "#F48D01",
   "background_color": "#F48D01",
   "icons": [
     {
-      "src": "icon-192x192.png",
+      "src": "/Dual-Token/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "icon-512x512.png",
+      "src": "/Dual-Token/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
