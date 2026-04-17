@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dual-Token Forest - Нет соединения</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a2f1f 0%, #1a4a2a 100%);
+            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            background: #F48D01;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -19,19 +18,19 @@
         .offline-container {
             text-align: center;
             max-width: 500px;
-            background: rgba(10, 47, 31, 0.95);
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(8px);
             border-radius: 48px;
             padding: 3rem 2rem;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 1px solid #a3e4b7;
+            border: 1px solid #b0d9b1;
         }
         .offline-icon { font-size: 5rem; margin-bottom: 1rem; }
-        h1 { color: #a3e4b7; font-size: 2rem; margin-bottom: 1rem; }
-        p { color: #c0e0d0; font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.5; }
+        h1 { color: #b0d9b1; font-size: 2rem; margin-bottom: 1rem; }
+        p { color: #ffffff; font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.5; }
         .retry-btn {
-            background: #a3e4b7;
-            color: #0a2f1f;
+            background: #b0d9b1;
+            color: #000000;
             border: none;
             padding: 0.8rem 2rem;
             font-size: 1.2rem;
@@ -40,7 +39,7 @@
             font-weight: 600;
             transition: background 0.3s;
         }
-        .retry-btn:hover { background: #2b8c5e; color: white; }
+        .retry-btn:hover { background: #000000; color: #b0d9b1; }
     </style>
 </head>
 <body>
