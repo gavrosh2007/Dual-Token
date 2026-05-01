@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Дуал-токен лес | Security + Мемкоин для лесов</title>
-    
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Dual-Token Forest">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#F48D01">
-    
     <style>
         * {
             margin: 0;
@@ -63,10 +60,14 @@
             margin: 0 auto;
         }
 
-        /* PWA кнопка — как в Hermes */
+        /* PWA кнопка — центрирование */
         .install-area {
             text-align: center;
-            margin: 0 0 1.5rem 0;
+            margin: 1rem auto 2rem auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
         .install-tooltip {
             position: relative;
@@ -457,9 +458,9 @@
                 <table>
                     <thead><tr><th>Режим</th><th>Примеры</th><th>Как работает Dual-Token</th></tr></thead>
                     <tbody>
-                        <tr><td class="model-tag">Государственная монополия</td><td>Россия, Китай</td><td>Концессия (49 лет). $CANOPY = право на арендный поток.</td></tr>
-                        <tr><td class="model-tag">Public Trust</td><td>Бразилия, Боливия</td><td>ГЧП + REDD+. $CANOPY = углеродные кредиты.</td></tr>
-                        <tr><td class="model-tag">Смешанная</td><td>США, Германия</td><td>Частная земля. $CANOPY = долевая собственность.</td></tr>
+                        <tr><td>Государственная монополия</td><td>Россия, Китай</td><td>Концессия (49 лет). $CANOPY = право на арендный поток.</td></tr>
+                        <tr><td>Public Trust</td><td>Бразилия, Боливия</td><td>ГЧП + REDD+. $CANOPY = углеродные кредиты.</td></tr>
+                        <tr><td>Смешанная</td><td>США, Германия</td><td>Частная земля. $CANOPY = долевая собственность.</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -546,7 +547,7 @@
 </div>
 
 <script>
-    // Калейдоскоп фонов
+    // Калейдоскоп фонов (без изменений)
     const bgImages = ['01.jpeg', '02.jpeg', '03.jpeg', '04.jpeg', '05.jpeg', '06.jpeg', '07.jpg', '08.jpeg'];
     const shuffled = [...bgImages].sort(() => 0.5 - Math.random());
     const selected1 = shuffled[0];
@@ -564,7 +565,7 @@
         bgLayersDiv.appendChild(layer2);
     }
 
-    // PWA установка
+    // PWA установка (исправлена регистрация SW)
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -588,7 +589,6 @@
         }
     });
 
-    // Обновление текстов PWA
     function updatePWATexts(lang) {
         const btnText = document.getElementById('pwaButtonText');
         const tooltip = document.getElementById('pwaTooltip');
@@ -604,7 +604,6 @@
         }
     }
 
-    // Переключение языков
     const ruDiv = document.getElementById('ru-content');
     const enDiv = document.getElementById('en-content');
     
@@ -648,7 +647,6 @@
     });
     updateUILang('ru');
 
-    // Модальное окно
     const modal = document.getElementById('questionModal');
     document.getElementById('askQuestionBtnRu')?.addEventListener('click', () => modal.classList.add('active'));
     document.getElementById('askQuestionBtnEn')?.addEventListener('click', () => modal.classList.add('active'));
@@ -688,7 +686,6 @@
         document.getElementById('answerArea').classList.add('active');
     });
 
-    // Квизы
     const answers = { '1': 'b', '2': 'b', '1-en': 'b', '2-en': 'b' };
     const feedbackMsg = {
         '1': { ru: '✅ Верно! Концессия — законный путь.', en: '✅ Correct! Concession is the legal path.' },
@@ -707,10 +704,10 @@
         });
     });
 
-    // Service Worker
+    // Service Worker — ИСПРАВЛЕНО на относительный путь и scope './'
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/Dual-Token/sw.js', { scope: '/Dual-Token/' })
+            navigator.serviceWorker.register('sw.js', { scope: './' })
                 .then(reg => console.log('✅ SW registered:', reg.scope))
                 .catch(err => console.log('❌ SW error:', err));
         });

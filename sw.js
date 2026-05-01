@@ -1,13 +1,17 @@
-const CACHE_NAME = 'dualtoken-v1';
-const BASE_PATH = '/Dual-Token/';
+const base = (() => {
+  const path = self.location.pathname.split('/');
+  path.pop();
+  return path.join('/') + '/';
+})();
 
+const CACHE_NAME = 'dualtoken-v2';
 const urlsToCache = [
-  BASE_PATH,
-  BASE_PATH + 'index.html',
-  BASE_PATH + 'offline.html',
-  BASE_PATH + 'manifest.json',
-  BASE_PATH + 'icon-192x192.png',
-  BASE_PATH + 'icon-512x512.png'
+  base,
+  base + 'index.html',
+  base + 'offline.html',
+  base + 'manifest.json',
+  base + 'icon-192x192.png',
+  base + 'icon-512x512.png'
 ];
 
 self.addEventListener('install', event => {
@@ -25,7 +29,7 @@ self.addEventListener('fetch', event => {
         if (response) return response;
         return fetch(event.request).catch(() => {
           if (event.request.mode === 'navigate') {
-            return caches.match(BASE_PATH + 'offline.html');
+            return caches.match(base + 'offline.html');
           }
           return new Response('Offline', { status: 503 });
         });
