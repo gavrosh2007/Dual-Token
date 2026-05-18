@@ -45,12 +45,12 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            filter: brightness(180%) contrast(120%) blur(0px);
-            opacity: 0.9;
+            filter: brightness(150%) contrast(110%) blur(0px);
+            opacity: 0.85;
         }
         .bg-layer.second {
-            filter: brightness(160%) contrast(110%) blur(0px);
-            opacity: 0.65;
+            filter: brightness(130%) contrast(105%) blur(0px);
+            opacity: 0.7;
         }
 
         .container {
@@ -60,7 +60,6 @@
             margin: 0 auto;
         }
 
-        /* PWA кнопка — центрирование */
         .install-area {
             text-align: center;
             margin: 1rem auto 2rem auto;
@@ -267,13 +266,6 @@
             text-align: center;
             color: #000000;
         }
-        .step-number {
-            background: #b25d3a;
-            color: white;
-            display: inline-block;
-            width: 30px;
-            border-radius: 50%;
-        }
 
         .token-table {
             background: rgba(0,0,0,0.2);
@@ -394,10 +386,26 @@
         }
 
         footer {
-            text-align: center;
             margin-top: 3rem;
-            color: #000000;
-            font-size: 0.8rem;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(4px);
+            border-radius: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        footer a {
+            color: #e8491d;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        footer p {
+            margin: 0.3rem 0;
         }
 
         .lang-content {
@@ -456,7 +464,9 @@
             <h3>🌍 Три конституционные модели</h3>
             <div class="token-table">
                 <table>
-                    <thead><tr><th>Режим</th><th>Примеры</th><th>Как работает Dual-Token</th></tr></thead>
+                    <thead>
+                        <tr><th>Режим</th><th>Примеры</th><th>Как работает Dual-Token</th></tr>
+                    </thead>
                     <tbody>
                         <tr><td>Государственная монополия</td><td>Россия, Китай</td><td>Концессия (49 лет). $CANOPY = право на арендный поток.</td></tr>
                         <tr><td>Public Trust</td><td>Бразилия, Боливия</td><td>ГЧП + REDD+. $CANOPY = углеродные кредиты.</td></tr>
@@ -517,7 +527,7 @@
             <div class="concept-card"><div class="card-icon">🌿</div><h3>$TIMBER (Meme)</h3><p>No KYC. Deflationary: 30% of forest revenue → auto buyback & burn.</p></div>
             <div class="concept-card"><div class="card-icon">🔗</div><h3>The Bridge</h3><p>Burn 1,000,000 $TIMBER → mint 1 $CANOPY.</p></div>
         </div>
-        <div class="decision-circle"><h3>🌍 3 Constitutional Models</h3><div class="token-table"></table><thead><tr><th>Regime</th><th>Examples</th><th>Dual-Token Adaptation</th></tr></thead><tbody>
+        <div class="decision-circle"><h3>🌍 3 Constitutional Models</h3><div class="token-table"><table><thead><tr><th>Regime</th><th>Examples</th><th>Dual-Token Adaptation</th></tr></thead><tbody>
             <tr><td>State Monopoly</td><td>Russia, China</td><td>Concession (49y). $CANOPY = lease cash flow.</td></tr>
             <tr><td>Public Trust</td><td>Brazil, Bolivia</td><td>PPP + REDD+. $CANOPY = carbon credits.</td></tr>
             <tr><td>Mixed</td><td>USA, Germany</td><td>Private land. $CANOPY = fractional ownership.</td></tr>
@@ -530,7 +540,13 @@
         </div>
     </div>
 
-    <footer>© Дуал-токен лес — конституционный капитализм на блокчейне</footer>
+    <footer id="siteFooter">
+        <p id="copyrightText">© Дуал-токен лес — конституционный капитализм на блокчейне</p>
+        <p>
+            <a href="/terms.html" target="_blank" id="termsLink">Условия использования</a> | 
+            <a href="/privacy.html" target="_blank" id="privacyLink">Политика конфиденциальности</a>
+        </p>
+    </footer>
 </div>
 
 <div id="questionModal" class="modal">
@@ -547,7 +563,7 @@
 </div>
 
 <script>
-    // Калейдоскоп фонов (удалён 02.jpeg)
+    // Фоны (удалён 02.jpeg)
     const bgImages = ['01.jpeg', '03.jpeg', '04.jpeg', '05.jpeg', '06.jpeg', '07.jpg', '08.jpeg'];
     const shuffled = [...bgImages].sort(() => 0.5 - Math.random());
     const selected1 = shuffled[0];
@@ -565,7 +581,7 @@
         bgLayersDiv.appendChild(layer2);
     }
 
-    // PWA установка (исправлена регистрация SW)
+    // PWA установка
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -604,6 +620,23 @@
         }
     }
 
+    // Функция обновления подвала при смене языка
+    function updateFooter(lang) {
+        const copyright = document.getElementById('copyrightText');
+        const termsLink = document.getElementById('termsLink');
+        const privacyLink = document.getElementById('privacyLink');
+        
+        if (lang === 'ru') {
+            copyright.textContent = '© Дуал-токен лес — конституционный капитализм на блокчейне';
+            termsLink.textContent = 'Условия использования';
+            privacyLink.textContent = 'Политика конфиденциальности';
+        } else {
+            copyright.textContent = '© Dual-Token Forest — constitutional capitalism on blockchain';
+            termsLink.textContent = 'Terms of Use';
+            privacyLink.textContent = 'Privacy Policy';
+        }
+    }
+
     const ruDiv = document.getElementById('ru-content');
     const enDiv = document.getElementById('en-content');
     
@@ -628,6 +661,7 @@
             closeBtn.textContent = '✖ Close';
         }
         updatePWATexts(lang);
+        updateFooter(lang);
     }
     
     document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -704,7 +738,6 @@
         });
     });
 
-    // Service Worker — ИСПРАВЛЕНО на относительный путь и scope './'
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js', { scope: './' })
