@@ -11,418 +11,64 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#F48D01">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #F48D01;
-            font-family: system-ui, 'Segoe UI', 'Cormorant Garamond', serif;
-            color: #000000;
-            line-height: 1.5;
-            padding: 2rem 1.5rem;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        .bg-layers {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        .bg-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            filter: brightness(150%) contrast(110%) blur(0px);
-            opacity: 0.85;
-        }
-        .bg-layer.second {
-            filter: brightness(130%) contrast(105%) blur(0px);
-            opacity: 0.7;
-        }
-
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-
-        .install-area {
-            text-align: center;
-            margin: 1rem auto 2rem auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        .install-tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        .pwa-icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-            gap: 0.3rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #000000;
-        }
-        .pwa-icon-btn img {
-            width: 96px;
-            height: 96px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .pwa-icon-btn:hover {
-            transform: scale(1.05);
-        }
-        .pwa-icon-btn:active {
-            transform: scale(0.95);
-        }
-        .tooltip-text {
-            visibility: hidden;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            font-size: 0.8rem;
-            font-weight: normal;
-        }
-        .install-tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-        .install-note {
-            margin-top: 0.5rem;
-            color: #000000;
-            font-weight: 600;
-            font-size: 0.75rem;
-            background: rgba(255,255,255,0.3);
-            display: inline-block;
-            padding: 0.3rem 1rem;
-            border-radius: 50px;
-        }
-        @media (max-width: 600px) {
-            .pwa-icon-btn img {
-                width: 64px;
-                height: 64px;
-            }
-            .tooltip-text {
-                white-space: normal;
-                width: 200px;
-                bottom: 130%;
-            }
-        }
-
-        .ask-btn {
-            background: #000000;
-            color: #b0d9b1;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 1.5rem;
-        }
-        .ask-btn:hover {
-            background: #333;
-            transform: scale(1.02);
-        }
-
-        .lang-switch {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            background: rgba(135, 206, 235, 0.25);
-            backdrop-filter: blur(8px);
-            padding: 0.75rem 1.5rem;
-            border-radius: 60px;
-        }
-        .lang-btn {
-            background: rgba(135, 206, 235, 0.25);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(0,0,0,0.25);
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            color: #000000;
-            transition: 0.2s;
-        }
-        .lang-btn.active {
-            background: #000000;
-            color: #b0d9b1;
-            border-color: #000000;
-        }
-        .lang-btn:hover {
-            background: rgba(135, 206, 235, 0.5);
-            transform: scale(1.02);
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 3rem;
-            background: rgba(176, 217, 177, 0.3);
-            backdrop-filter: blur(8px);
-            padding: 2rem;
-            border-radius: 3rem;
-        }
-        .hero h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: #000000;
-        }
-        .hero .subhead {
-            font-size: 1.3rem;
-            font-style: italic;
-            color: #000000;
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-        .concept-card {
-            background: rgba(244, 141, 1, 0.85);
-            backdrop-filter: blur(2px);
-            border-radius: 2rem;
-            padding: 1.8rem;
-            color: #ffffff;
-            transition: transform 0.2s;
-        }
-        .concept-card:hover {
-            transform: translateY(-5px);
-            background: rgba(244, 141, 1, 0.95);
-        }
-        .concept-card h3 {
-            color: #ffffff;
-            margin-bottom: 1rem;
-        }
-        .card-icon {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .decision-circle {
-            background: rgba(244, 141, 1, 0.85);
-            backdrop-filter: blur(2px);
-            border-radius: 2rem;
-            padding: 1.8rem;
-            margin: 2rem 0;
-            color: #ffffff;
-        }
-        .decision-circle h3 {
-            color: #ffffff;
-            margin-bottom: 1rem;
-        }
-
-        .algorithm-steps {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        .step {
-            flex: 1;
-            background: rgba(255,255,240,0.8);
-            padding: 1rem;
-            border-radius: 1.5rem;
-            text-align: center;
-            color: #000000;
-        }
-
-        .token-table {
-            background: rgba(0,0,0,0.2);
-            border-radius: 1.5rem;
-            overflow-x: auto;
-            margin: 1.5rem 0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            color: #ffffff;
-        }
-        th, td {
-            padding: 0.8rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-        th {
-            background: #b25d3a;
-            color: white;
-        }
-
-        .quote {
-            background: rgba(244, 141, 1, 0.85);
-            backdrop-filter: blur(4px);
-            padding: 1.5rem;
-            border-radius: 2rem;
-            margin: 2rem 0;
-            border-left: 6px solid #ffd966;
-            color: #ffffff;
-        }
-
-        .quiz-card {
-            background: rgba(0,0,0,0.2);
-            border-radius: 1.5rem;
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-            color: #ffffff;
-        }
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin: 1rem 0;
-        }
-        .check-btn {
-            background: #000000;
-            color: #b0d9b1;
-            border: none;
-            padding: 0.5rem 1.2rem;
-            border-radius: 2rem;
-            cursor: pointer;
-        }
-        .quiz-feedback {
-            margin-top: 0.5rem;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: rgba(244, 141, 1, 0.95);
-            backdrop-filter: blur(12px);
-            border-radius: 2rem;
-            padding: 2rem;
-            max-width: 550px;
-            width: 90%;
-            color: white;
-        }
-        .modal-content textarea {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border-radius: 1rem;
-            border: none;
-            min-height: 100px;
-            font-family: inherit;
-            font-size: 1rem;
-        }
-        .modal-content button {
-            background: #000000;
-            color: #b0d9b1;
-            border: none;
-            padding: 0.8rem;
-            border-radius: 2rem;
-            width: 100%;
-            cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        .answer-area {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(0,0,0,0.3);
-            border-radius: 1rem;
-            display: none;
-        }
-        .answer-area.active {
-            display: block;
-        }
-        .close-modal {
-            background: transparent !important;
-            color: #ffffff !important;
-            border: 1px solid #ffffff !important;
-        }
-
-        footer {
-            margin-top: 3rem;
-            padding: 1.5rem;
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(4px);
-            border-radius: 1rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        footer a {
-            color: #e8491d;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-        footer p {
-            margin: 0.3rem 0;
-        }
-
-        .lang-content {
-            display: none;
-        }
-        .lang-content.active {
-            display: block;
-        }
-
-        @media (max-width: 700px) {
-            body {
-                padding: 1rem;
-            }
-            .hero h1 {
-                font-size: 2rem;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #F48D01; font-family: system-ui, 'Segoe UI', 'Cormorant Garamond', serif; color: #000000; line-height: 1.5; padding: 2rem 1.5rem; min-height: 100vh; position: relative; }
+        .bg-layers { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .bg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat; filter: brightness(150%) contrast(110%); opacity: 0.85; }
+        .bg-layer.second { filter: brightness(130%) contrast(105%); opacity: 0.7; }
+        .container { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; }
+        .install-area { text-align: center; margin: 1rem auto 2rem auto; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .install-tooltip { position: relative; display: inline-block; }
+        .pwa-icon-btn { background: none; border: none; cursor: pointer; padding: 0; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.2s; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; color: #000000; }
+        .pwa-icon-btn img { width: 96px; height: 96px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .pwa-icon-btn:hover { transform: scale(1.05); }
+        .pwa-icon-btn:active { transform: scale(0.95); }
+        .tooltip-text { visibility: hidden; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 5px 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; transform: translateX(-50%); white-space: nowrap; opacity: 0; transition: opacity 0.3s; pointer-events: none; font-size: 0.8rem; font-weight: normal; }
+        .install-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .install-note { margin-top: 0.5rem; color: #000000; font-weight: 600; font-size: 0.75rem; background: rgba(255,255,255,0.3); display: inline-block; padding: 0.3rem 1rem; border-radius: 50px; }
+        @media (max-width: 600px) { .pwa-icon-btn img { width: 64px; height: 64px; } .tooltip-text { white-space: normal; width: 200px; bottom: 130%; } }
+        .ask-btn { background: #000000; color: #b0d9b1; border: none; padding: 0.8rem 2rem; border-radius: 50px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.2s; margin-top: 1.5rem; }
+        .ask-btn:hover { background: #333; transform: scale(1.02); }
+        .lang-switch { display: flex; justify-content: flex-end; gap: 0.75rem; margin-bottom: 2rem; background: rgba(135, 206, 235, 0.25); backdrop-filter: blur(8px); padding: 0.75rem 1.5rem; border-radius: 60px; }
+        .lang-btn { background: rgba(135, 206, 235, 0.25); backdrop-filter: blur(8px); border: 1px solid rgba(0,0,0,0.25); padding: 0.4rem 1rem; border-radius: 40px; font-weight: 600; font-size: 0.9rem; cursor: pointer; color: #000000; transition: 0.2s; }
+        .lang-btn.active { background: #000000; color: #b0d9b1; border-color: #000000; }
+        .lang-btn:hover { background: rgba(135, 206, 235, 0.5); transform: scale(1.02); }
+        .hero { text-align: center; margin-bottom: 3rem; background: rgba(176, 217, 177, 0.3); backdrop-filter: blur(8px); padding: 2rem; border-radius: 3rem; }
+        .hero h1 { font-size: 2.8rem; font-weight: 700; color: #000000; }
+        .hero .subhead { font-size: 1.3rem; font-style: italic; color: #000000; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 3rem 0; }
+        .concept-card { background: rgba(244, 141, 1, 0.85); backdrop-filter: blur(2px); border-radius: 2rem; padding: 1.8rem; color: #ffffff; transition: transform 0.2s; }
+        .concept-card:hover { transform: translateY(-5px); background: rgba(244, 141, 1, 0.95); }
+        .concept-card h3 { color: #ffffff; margin-bottom: 1rem; }
+        .card-icon { font-size: 2.8rem; margin-bottom: 1rem; }
+        .decision-circle { background: rgba(244, 141, 1, 0.85); backdrop-filter: blur(2px); border-radius: 2rem; padding: 1.8rem; margin: 2rem 0; color: #ffffff; }
+        .decision-circle h3 { color: #ffffff; margin-bottom: 1rem; }
+        .algorithm-steps { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0; }
+        .step { flex: 1; background: rgba(255,255,240,0.8); padding: 1rem; border-radius: 1.5rem; text-align: center; color: #000000; }
+        .token-table { background: rgba(0,0,0,0.2); border-radius: 1.5rem; overflow-x: auto; margin: 1.5rem 0; }
+        table { width: 100%; border-collapse: collapse; color: #ffffff; }
+        th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        th { background: #b25d3a; color: white; }
+        .quote { background: rgba(244, 141, 1, 0.85); backdrop-filter: blur(4px); padding: 1.5rem; border-radius: 2rem; margin: 2rem 0; border-left: 6px solid #ffd966; color: #ffffff; }
+        .quiz-card { background: rgba(0,0,0,0.2); border-radius: 1.5rem; padding: 1.2rem; margin-bottom: 1rem; color: #ffffff; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+        .check-btn { background: #000000; color: #b0d9b1; border: none; padding: 0.5rem 1.2rem; border-radius: 2rem; cursor: pointer; }
+        .quiz-feedback { margin-top: 0.5rem; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: rgba(244, 141, 1, 0.95); backdrop-filter: blur(12px); border-radius: 2rem; padding: 2rem; max-width: 550px; width: 90%; color: white; }
+        .modal-content textarea { width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 1rem; border: none; min-height: 100px; font-family: inherit; font-size: 1rem; }
+        .modal-content button { background: #000000; color: #b0d9b1; border: none; padding: 0.8rem; border-radius: 2rem; width: 100%; cursor: pointer; font-weight: bold; margin-bottom: 0.5rem; }
+        .answer-area { margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 1rem; display: none; }
+        .answer-area.active { display: block; }
+        .close-modal { background: transparent !important; color: #ffffff !important; border: 1px solid #ffffff !important; }
+        footer { margin-top: 3rem; padding: 1.5rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); border-radius: 1rem; text-align: center; font-size: 0.85rem; color: #000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        footer a { color: #e8491d; text-decoration: none; font-weight: 500; margin: 0 0.3rem; }
+        footer a:hover { text-decoration: underline; }
+        footer p { margin: 0.3rem 0; }
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
+        @media (max-width: 700px) { body { padding: 1rem; } .hero h1 { font-size: 2rem; } }
     </style>
 </head>
 <body>
@@ -432,8 +78,7 @@
     <div class="install-area">
         <div class="install-tooltip">
             <button id="pwa-install-icon" class="pwa-icon-btn">
-                <img src="icon-192x192.png" alt="Установить приложение" width="96" height="96"
-                     onerror="this.style.display='none'; this.parentNode.querySelector('.fallback-text').style.display='inline-block';">
+                <img src="icon-192x192.png" alt="Установить приложение" width="96" height="96" onerror="this.style.display='none'; this.parentNode.querySelector('.fallback-text').style.display='inline-block';">
                 <span class="fallback-text" style="display:none;">🌲</span>
                 <span id="pwaButtonText">Установить</span>
             </button>
@@ -453,85 +98,24 @@
             <div class="subhead">Security + Мемкоин для суверенных лесов</div>
             <button class="ask-btn" id="askQuestionBtnRu">🤔 Задать вопрос лесу</button>
         </div>
-
         <div class="cards-grid">
             <div class="concept-card"><div class="card-icon">🏛️</div><h3>$CANOPY (Security Token)</h3><p>Обеспечен реальным денежным потоком от углеродных кредитов. Только для аккредитованных инвесторов. KYC/AML.</p></div>
             <div class="concept-card"><div class="card-icon">🌿</div><h3>$TIMBER (Meme Token)</h3><p>Народный токен. Без KYC. Дефляционная модель: 30% выручки леса уходит на автоматический выкуп и сжигание.</p></div>
             <div class="concept-card"><div class="card-icon">🔗</div><h3>Мост</h3><p>Сожги 1,000,000 $TIMBER → получи 1 $CANOPY. Мост из масс-маркета в институциональные инвестиции.</p></div>
         </div>
-
-        <div class="decision-circle">
-            <h3>🌍 Три конституционные модели</h3>
-            <div class="token-table">
-                <table>
-                    <thead>
-                        <tr><th>Режим</th><th>Примеры</th><th>Как работает Dual-Token</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Государственная монополия</td><td>Россия, Китай</td><td>Концессия (49 лет). $CANOPY = право на арендный поток.</td></tr>
-                        <tr><td>Public Trust</td><td>Бразилия, Боливия</td><td>ГЧП + REDD+. $CANOPY = углеродные кредиты.</td></tr>
-                        <tr><td>Смешанная</td><td>США, Германия</td><td>Частная земля. $CANOPY = долевая собственность.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="decision-circle">
-            <h3>💰 Денежный поток (Cash Flow Engine)</h3>
-            <div class="algorithm-steps">
-                <div class="step">🌲 Лес поглощает CO2</div>
-                <div class="step">📄 Углеродные кредиты (Verra)</div>
-                <div class="step">💵 Продажа компаниям → USDC</div>
-                <div class="step">⚙️ Смарт-контракт делит доход</div>
-            </div>
-            <p><strong>40%</strong> → дивиденды $CANOPY | <strong>30%</strong> → байбек $TIMBER | <strong>20%</strong> → лесовосстановление | <strong>10%</strong> → роялти государству</p>
-        </div>
-
-        <div class="quote">
-            <p>«Вам не нужно менять конституцию. Вам нужно токенизировать будущий денежный поток. Security токен — для институтов. Мемкоин — для народа. Лес побеждает. Государство побеждает.»</p>
-        </div>
-
-        <div class="decision-circle">
-            <h3>🧠 Тренировка: выбери стратегию</h3>
-            <div class="quiz-card" data-quiz="1">
-                <p><strong>Ситуация 1.</strong> Правительство не позволяет продавать землю. Ваши действия?</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="quiz1" value="a"> Нарушить закон и продать токены земли.</label>
-                    <label><input type="radio" name="quiz1" value="b"> Заключить концессию (аренду) и токенизировать право на доход.</label>
-                    <label><input type="radio" name="quiz1" value="c"> Уйти в другой проект.</label>
-                </div>
-                <button class="check-btn" data-quiz="1">Проверить</button>
-                <div class="quiz-feedback" data-feedback="1"></div>
-            </div>
-            <div class="quiz-card" data-quiz="2">
-                <p><strong>Ситуация 2.</strong> Как сделать мемкоин устойчивым, а не пирамидой?</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="quiz2" value="a"> Бесконечно печатать новые монеты.</label>
-                    <label><input type="radio" name="quiz2" value="b"> Привязать к реальному денежному потоку от углеродных кредитов (байбек).</label>
-                    <label><input type="radio" name="quiz2" value="c"> Положиться только на хайп в соцсетях.</label>
-                </div>
-                <button class="check-btn" data-quiz="2">Проверить</button>
-                <div class="quiz-feedback" data-feedback="2"></div>
-            </div>
+        <div class="decision-circle"><h3>🌍 Три конституционные модели</h3><div class="token-table"><table><thead><tr><th>Режим</th><th>Примеры</th><th>Как работает Dual-Token</th></tr></thead><tbody><tr><td>Государственная монополия</td><td>Россия, Китай</td><td>Концессия (49 лет). $CANOPY = право на арендный поток.</td></tr><tr><td>Public Trust</td><td>Бразилия, Боливия</td><td>ГЧП + REDD+. $CANOPY = углеродные кредиты.</td></tr><tr><td>Смешанная</td><td>США, Германия</td><td>Частная земля. $CANOPY = долевая собственность.</td></tr></tbody></table></div></div>
+        <div class="decision-circle"><h3>💰 Денежный поток (Cash Flow Engine)</h3><div class="algorithm-steps"><div class="step">🌲 Лес поглощает CO2</div><div class="step">📄 Углеродные кредиты (Verra)</div><div class="step">💵 Продажа компаниям → USDC</div><div class="step">⚙️ Смарт-контракт делит доход</div></div><p><strong>40%</strong> → дивиденды $CANOPY | <strong>30%</strong> → байбек $TIMBER | <strong>20%</strong> → лесовосстановление | <strong>10%</strong> → роялти государству</p></div>
+        <div class="quote"><p>«Вам не нужно менять конституцию. Вам нужно токенизировать будущий денежный поток. Security токен — для институтов. Мемкоин — для народа. Лес побеждает. Государство побеждает.»</p></div>
+        <div class="decision-circle"><h3>🧠 Тренировка: выбери стратегию</h3>
+            <div class="quiz-card" data-quiz="1"><p><strong>Ситуация 1.</strong> Правительство не позволяет продавать землю. Ваши действия?</p><div class="quiz-options"><label><input type="radio" name="quiz1" value="a"> Нарушить закон и продать токены земли.</label><label><input type="radio" name="quiz1" value="b"> Заключить концессию (аренду) и токенизировать право на доход.</label><label><input type="radio" name="quiz1" value="c"> Уйти в другой проект.</label></div><button class="check-btn" data-quiz="1">Проверить</button><div class="quiz-feedback" data-feedback="1"></div></div>
+            <div class="quiz-card" data-quiz="2"><p><strong>Ситуация 2.</strong> Как сделать мемкоин устойчивым, а не пирамидой?</p><div class="quiz-options"><label><input type="radio" name="quiz2" value="a"> Бесконечно печатать новые монеты.</label><label><input type="radio" name="quiz2" value="b"> Привязать к реальному денежному потоку от углеродных кредитов (байбек).</label><label><input type="radio" name="quiz2" value="c"> Положиться только на хайп в соцсетях.</label></div><button class="check-btn" data-quiz="2">Проверить</button><div class="quiz-feedback" data-feedback="2"></div></div>
         </div>
     </div>
 
     <div id="en-content" class="lang-content">
-        <div class="hero">
-            <h1>Dual-Token Forest</h1>
-            <div class="subhead">Security + Meme for Sovereign Forests</div>
-            <button class="ask-btn" id="askQuestionBtnEn">🤔 Ask the Forest</button>
-        </div>
-        <div class="cards-grid">
-            <div class="concept-card"><div class="card-icon">🏛️</div><h3>$CANOPY (Security)</h3><p>Backed by real carbon credit cash flow. KYC/AML. For accredited investors.</p></div>
-            <div class="concept-card"><div class="card-icon">🌿</div><h3>$TIMBER (Meme)</h3><p>No KYC. Deflationary: 30% of forest revenue → auto buyback & burn.</p></div>
-            <div class="concept-card"><div class="card-icon">🔗</div><h3>The Bridge</h3><p>Burn 1,000,000 $TIMBER → mint 1 $CANOPY.</p></div>
-        </div>
-        <div class="decision-circle"><h3>🌍 3 Constitutional Models</h3><div class="token-table"><table><thead><tr><th>Regime</th><th>Examples</th><th>Dual-Token Adaptation</th></tr></thead><tbody>
-            <tr><td>State Monopoly</td><td>Russia, China</td><td>Concession (49y). $CANOPY = lease cash flow.</td></tr>
-            <tr><td>Public Trust</td><td>Brazil, Bolivia</td><td>PPP + REDD+. $CANOPY = carbon credits.</td></tr>
-            <tr><td>Mixed</td><td>USA, Germany</td><td>Private land. $CANOPY = fractional ownership.</td></tr>
-        </tbody></table></div></div>
+        <div class="hero"><h1>Dual-Token Forest</h1><div class="subhead">Security + Meme for Sovereign Forests</div><button class="ask-btn" id="askQuestionBtnEn">🤔 Ask the Forest</button></div>
+        <div class="cards-grid"><div class="concept-card"><div class="card-icon">🏛️</div><h3>$CANOPY (Security)</h3><p>Backed by real carbon credit cash flow. KYC/AML. For accredited investors.</p></div><div class="concept-card"><div class="card-icon">🌿</div><h3>$TIMBER (Meme)</h3><p>No KYC. Deflationary: 30% of forest revenue → auto buyback & burn.</p></div><div class="concept-card"><div class="card-icon">🔗</div><h3>The Bridge</h3><p>Burn 1,000,000 $TIMBER → mint 1 $CANOPY.</p></div></div>
+        <div class="decision-circle"><h3>🌍 3 Constitutional Models</h3><div class="token-table"><table><thead><tr><th>Regime</th><th>Examples</th><th>Dual-Token Adaptation</th></tr></thead><tbody><tr><td>State Monopoly</td><td>Russia, China</td><td>Concession (49y). $CANOPY = lease cash flow.</td></tr><tr><td>Public Trust</td><td>Brazil, Bolivia</td><td>PPP + REDD+. $CANOPY = carbon credits.</td></tr><tr><td>Mixed</td><td>USA, Germany</td><td>Private land. $CANOPY = fractional ownership.</td></tr></tbody></table></div></div>
         <div class="decision-circle"><h3>💰 Cash Flow Engine</h3><div class="algorithm-steps"><div class="step">🌲 CO2 absorption</div><div class="step">📄 Carbon credits</div><div class="step">💵 Sale → USDC</div><div class="step">⚙️ Smart contract splits</div></div><p><strong>40%</strong> → $CANOPY dividends | <strong>30%</strong> → $TIMBER buyback | <strong>20%</strong> → reforestation | <strong>10%</strong> → gov royalty</p></div>
         <div class="quote"><p>"You don't need to change the constitution. Just tokenize the future cash flow. Security for institutions. Meme for the people."</p></div>
         <div class="decision-circle"><h3>🧠 Training: choose strategy</h3>
@@ -540,12 +124,28 @@
         </div>
     </div>
 
+    <!-- НОВЫЙ ПОДВАЛ С 5 ССЫЛКАМИ (переключаемый) -->
     <footer id="siteFooter">
-        <p id="copyrightText">© Дуал-токен лес — конституционный капитализм на блокчейне</p>
-        <p>
-            <a href="/terms.html" target="_blank" id="termsLink">Условия использования</a> | 
-            <a href="/privacy.html" target="_blank" id="privacyLink">Политика конфиденциальности</a>
-        </p>
+        <div id="footer-ru" style="display: block;">
+            <p>© Дуал-токен лес — конституционный капитализм на блокчейне</p>
+            <p>
+                <a href="privacy.html">Политика конфиденциальности</a> |
+                <a href="terms.html">Условия использования</a> |
+                <a href="robots.txt" target="_blank">robots.txt</a> |
+                <a href="sitemap.xml" target="_blank">sitemap.xml</a> |
+                <a href="humans.txt" target="_blank">humans.txt</a>
+            </p>
+        </div>
+        <div id="footer-en" style="display: none;">
+            <p>© Dual-Token Forest — constitutional capitalism on blockchain</p>
+            <p>
+                <a href="privacy.html">Privacy Policy</a> |
+                <a href="terms.html">Terms of Use</a> |
+                <a href="robots.txt" target="_blank">robots.txt</a> |
+                <a href="sitemap.xml" target="_blank">sitemap.xml</a> |
+                <a href="humans.txt" target="_blank">humans.txt</a>
+            </p>
+        </div>
     </footer>
 </div>
 
@@ -568,7 +168,6 @@
     const shuffled = [...bgImages].sort(() => 0.5 - Math.random());
     const selected1 = shuffled[0];
     const selected2 = shuffled[1];
-    
     const bgLayersDiv = document.getElementById('bgLayers');
     if (bgLayersDiv) {
         const layer1 = document.createElement('div');
@@ -583,26 +182,16 @@
 
     // PWA установка
     let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
-    
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
     window.showPWAInstructions = function() {
         const lang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
         alert(lang === 'ru' 
             ? 'Для установки приложения:\n\n• На компьютере: нажмите на иконку монитора со стрелкой в адресной строке.\n• На iPhone: нажмите "Поделиться" → "На экран «Домой»".\n• На Android: нажмите на иконку монитора со стрелкой в адресной строке.'
             : 'To install the app:\n\n• On computer: click the monitor icon with a down arrow in the address bar.\n• On iPhone: tap "Share" → "Add to Home Screen".\n• On Android: tap the monitor icon with a down arrow in the address bar.');
     };
-    
     document.getElementById('pwa-install-icon')?.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            deferredPrompt = null;
-        } else {
-            showPWAInstructions();
-        }
+        if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; deferredPrompt = null; } 
+        else { showPWAInstructions(); }
     });
 
     function updatePWATexts(lang) {
@@ -620,33 +209,26 @@
         }
     }
 
-    // Функция обновления подвала при смене языка
-    function updateFooter(lang) {
-        const copyright = document.getElementById('copyrightText');
-        const termsLink = document.getElementById('termsLink');
-        const privacyLink = document.getElementById('privacyLink');
-        
-        if (lang === 'ru') {
-            copyright.textContent = '© Дуал-токен лес — конституционный капитализм на блокчейне';
-            termsLink.textContent = 'Условия использования';
-            privacyLink.textContent = 'Политика конфиденциальности';
-        } else {
-            copyright.textContent = '© Dual-Token Forest — constitutional capitalism on blockchain';
-            termsLink.textContent = 'Terms of Use';
-            privacyLink.textContent = 'Privacy Policy';
-        }
+    // Очистка всех сообщений квизов и закрытие модалки при смене языка
+    function clearQuizFeedback() {
+        document.querySelectorAll('.quiz-feedback').forEach(el => el.innerHTML = '');
+        const modal = document.getElementById('questionModal');
+        if (modal.classList.contains('active')) modal.classList.remove('active');
+        document.getElementById('answerArea').classList.remove('active');
+        document.getElementById('questionText').value = '';
     }
 
     const ruDiv = document.getElementById('ru-content');
     const enDiv = document.getElementById('en-content');
-    
+    const footerRu = document.getElementById('footer-ru');
+    const footerEn = document.getElementById('footer-en');
+
     function updateUILang(lang) {
         const modalTitle = document.getElementById('modalTitle');
         const submitBtn = document.getElementById('submitQuestion');
         const answerTitle = document.getElementById('answerTitle');
         const closeBtn = document.getElementById('closeModalBtn');
         const textarea = document.getElementById('questionText');
-        
         if (lang === 'ru') {
             modalTitle.textContent = '🤔 Спросите у леса';
             submitBtn.textContent = '🔮 Получить анализ (теория игр + токеномика)';
@@ -661,26 +243,25 @@
             closeBtn.textContent = '✖ Close';
         }
         updatePWATexts(lang);
-        updateFooter(lang);
+        // переключение подвала
+        if (lang === 'ru') { footerRu.style.display = 'block'; footerEn.style.display = 'none'; }
+        else { footerRu.style.display = 'none'; footerEn.style.display = 'block'; }
     }
-    
+
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const lang = btn.dataset.lang;
-            if (lang === 'ru') {
-                ruDiv.classList.add('active');
-                enDiv.classList.remove('active');
-            } else {
-                ruDiv.classList.remove('active');
-                enDiv.classList.add('active');
-            }
+            if (lang === 'ru') { ruDiv.classList.add('active'); enDiv.classList.remove('active'); }
+            else { ruDiv.classList.remove('active'); enDiv.classList.add('active'); }
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            clearQuizFeedback();
             updateUILang(lang);
         });
     });
     updateUILang('ru');
 
+    // Модальное окно
     const modal = document.getElementById('questionModal');
     document.getElementById('askQuestionBtnRu')?.addEventListener('click', () => modal.classList.add('active'));
     document.getElementById('askQuestionBtnEn')?.addEventListener('click', () => modal.classList.add('active'));
@@ -693,17 +274,9 @@
     function analyzeForestQuestion(question, lang) {
         const q = question.toLowerCase();
         const dangerous = ['оружие', 'бомб', 'убить', 'насилие', 'weapon', 'bomb', 'kill', 'violence'];
-        for (let word of dangerous) {
-            if (q.includes(word)) {
-                return lang === 'ru' ? '⚠️ Извините, я могу отвечать только на вопросы о лесах, токенизации и инвестициях.' : '⚠️ Sorry, I can only answer about forests, tokenization, and investments.';
-            }
-        }
-        if (q.includes('инвестиц') || q.includes('вложить') || q.includes('купить') || q.includes('invest') || q.includes('buy')) {
-            return lang === 'ru' ? '📈 Вероятность успешной инвестиции — 74%\n\nРекомендация: 70% в $CANOPY, 30% в $TIMBER.' : '📈 Probability of successful investment — 74%\n\nRecommendation: 70% in $CANOPY, 30% in $TIMBER.';
-        }
-        if (q.includes('разниц') || q.includes('отличается') || q.includes('difference')) {
-            return lang === 'ru' ? '🌲 $CANOPY — Security Token (KYC, дивиденды). 🌿 $TIMBER — Мемкоин (без KYC, байбек).' : '🌲 $CANOPY — Security Token (KYC, dividends). 🌿 $TIMBER — Meme coin (no KYC, buyback).';
-        }
+        for (let word of dangerous) if (q.includes(word)) return lang === 'ru' ? '⚠️ Извините, я могу отвечать только на вопросы о лесах, токенизации и инвестициях.' : '⚠️ Sorry, I can only answer about forests, tokenization, and investments.';
+        if (q.includes('инвестиц') || q.includes('вложить') || q.includes('купить') || q.includes('invest') || q.includes('buy')) return lang === 'ru' ? '📈 Вероятность успешной инвестиции — 74%\n\nРекомендация: 70% в $CANOPY, 30% в $TIMBER.' : '📈 Probability of successful investment — 74%\n\nRecommendation: 70% in $CANOPY, 30% in $TIMBER.';
+        if (q.includes('разниц') || q.includes('отличается') || q.includes('difference')) return lang === 'ru' ? '🌲 $CANOPY — Security Token (KYC, дивиденды). 🌿 $TIMBER — Мемкоин (без KYC, байбек).' : '🌲 $CANOPY — Security Token (KYC, dividends). 🌿 $TIMBER — Meme coin (no KYC, buyback).';
         return lang === 'ru' ? '❓ Уточните: страна? $CANOPY или $TIMBER? Горизонт инвестиций?' : '❓ Please specify: country? $CANOPY or $TIMBER? Investment horizon?';
     }
 
@@ -711,11 +284,7 @@
         const question = document.getElementById('questionText').value;
         const lang = document.querySelector('.lang-btn.active')?.dataset.lang || 'ru';
         const answerText = document.getElementById('answerText');
-        if (!question.trim()) {
-            answerText.innerText = lang === 'ru' ? '❌ Напишите вопрос о лесе или токенах.' : '❌ Write a question about the forest or tokens.';
-            document.getElementById('answerArea').classList.add('active');
-            return;
-        }
+        if (!question.trim()) { answerText.innerText = lang === 'ru' ? '❌ Напишите вопрос о лесе или токенах.' : '❌ Write a question about the forest or tokens.'; document.getElementById('answerArea').classList.add('active'); return; }
         answerText.innerText = analyzeForestQuestion(question, lang);
         document.getElementById('answerArea').classList.add('active');
     });
@@ -738,13 +307,7 @@
         });
     });
 
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js', { scope: './' })
-                .then(reg => console.log('✅ SW registered:', reg.scope))
-                .catch(err => console.log('❌ SW error:', err));
-        });
-    }
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js', { scope: './' }).catch(err => console.log('SW error:', err)); }); }
 </script>
 </body>
 </html>
